@@ -12,19 +12,32 @@ NUM_LETTERS = 7
 
 def draw_letters():
     """Pick NUM_LETTERS letters randomly. Hint: use stdlib random"""
-    pass
+    return random.sample(POUCH, NUM_LETTERS)
 
 
 def input_word(draw):
     """Ask player for a word and validate against draw.
     Use _validation(word, draw) helper."""
-    pass 
-
-
+    while True:
+        word = input(f"type a word from letters :{','.join(set(draw))}\n")
+        try:
+            _validation(word, draw)
+        except ValueError as e:
+            print(e)
+            continue
 
 def _validation(word, draw):
     """Validations: 1) only use letters of draw, 2) valid dictionary word"""
-    pass
+    pool = list(draw)
+    for ch in word.upper():
+        if ch in pool:
+            pool.remove(ch)
+        else:
+            raise ValueError(f'{word} is not valid, some letters are invalid')
+
+    if not word.lower() in DICTIONARY:
+        raise ValueError(f'{word} is not in dictionary.')
+    return word
 
 
 # From challenge 01:
@@ -40,13 +53,14 @@ def calc_word_value(word):
 def get_possible_dict_words(draw):
     """Get all possible words from draw which are valid dictionary words.
     Use the _get_permutations_draw helper and DICTIONARY constant"""
-    pass
+    return [word for word in _get_permutations_draw(draw) if word.lower() in DICTIONARY]
 
 
 def _get_permutations_draw(draw):
     """Helper for get_possible_dict_words to get all permutations of draw letters.
     Hint: use itertools.permutations"""
-    pass
+    flatten = [list(map(''.join, itertools.permutations(draw, i))) for i in range(1, len(draw) + 1)]
+    return [item for l in flatten for item in l]
 
 
 # From challenge 01:
@@ -74,6 +88,3 @@ def main():
     game_score = word_score / max_word_score * 100
     print('You scored: {:.1f}'.format(game_score))
 
-
-if __name__ == "__main__":
-    main()
